@@ -1,0 +1,849 @@
+
+{% load myapp_tags %}
+
+<h1>Web Services</h1>
+<ul>
+    {% get_web_services as web_services %}
+    {% for service in web_services %}
+        <li>
+            <h2>{{ service.title }}</h2>
+            <p>{{ service.description }}</p>
+            <p>Price: {{ service.price }}</p>
+            <img src="{{ service.image.url }}" alt="{{ service.title }}">
+            <ul>
+                {% for img in service.simage.all %}
+                    <li><img src="{{ img.image.url }}" alt="Service Image"></li>
+                {% endfor %}
+            </ul>
+        </li>
+    {% endfor %}
+</ul>
+
+<h1>Services</h1>
+<ul>
+    {% get_servic_services as servic_services %}
+    {% for service in servic_services %}
+        <li>
+            <h2>{{ service.title }}</h2>
+            <p>{{ service.description }}</p>
+            <p>Price: {{ service.price }}</p>
+            <p>Author: {{ service.author }}</p>
+            <p>Date Posted: {{ service.date_posted }}</p>
+            <p>Reads: {{ service.reads }} | Likes: {{ service.likes }} | Comments: {{ service.comments_count }}</p>
+            <img src="{{ service.image.url }}" alt="{{ service.title }}">
+        </li>
+    {% endfor %}
+</ul>
+
+<h1>map</h1>
+{% get_map as map %}
+{{map.link}}
+
+<h1>Workers</h1>
+<ul>
+    {% get_workers as workers %}
+    {% for worker in workers %}
+        <li>
+            <h2>{{ worker.name }}</h2>
+            <p>Position: {{ worker.postion }}</p>
+            <p>{{ worker.description }}</p>
+            <img src="{{ worker.image.url }}" alt="{{ worker.name }}">
+            <ul>
+                {% for sm in worker.socilamedia_worker.all %}
+                    <li>{{ sm.social_media.name }}: <a href="{{ sm.link }}">{{ sm.link }}</a></li>
+                {% endfor %}
+            </ul>
+        </li>
+    {% endfor %}
+</ul>
+
+<h1>client list</h1>
+<ul>
+    {% get_clients as get_clients %}
+    {% for clienth in get_clients %}
+        <li>
+            <h2>{{ clienth.name }}</h2>
+            <p>{{ testimonial.website }}</p>
+            <img src="{{ clienth.image.url }}" alt="{{ clienth.name }}">
+        </li>
+    {% endfor %}
+</ul>
+
+<h1>Testimonials</h1>
+<ul>
+    {% get_testimonials as testimonials %}
+    {% for testimonial in testimonials %}
+        <li>
+            <h2>{{ testimonial.name }}</h2>
+            <p>{{ testimonial.description }}</p>
+            <img src="{{ testimonial.image.url }}" alt="{{ testimonial.name }}">
+        </li>
+    {% endfor %}
+</ul>
+
+<h1>Gallery</h1>
+{% get_gtype as get_gtype %}
+    {% for item in get_gtype %}
+        {{item.name}}
+
+    {% endfor %}
+<ul> 
+    {% get_gallery as gallery_items %}
+    {% for item in gallery_items %}
+        <li>
+            <p>{{ item.description }}</p>
+            <img src="{{ item.image.url }}" alt="{{ item.description }}">
+        </li>
+    {% endfor %}
+</ul>
+
+<h1>FAQs</h1>
+<ul>
+    {% get_faqs as faqs %}
+    {% for faq in faqs %}
+        <li>
+            <h2>{{ faq.qus }}</h2>
+            <p>{{ faq.ans }}</p>
+        </li>
+    {% endfor %}
+</ul>
+
+<h1>Blogs</h1>
+<ul>
+    {% get_blogs as blogs %}
+    {% for blog in blogs %}
+        <li>
+            <h2>{{ blog.title }}</h2>
+            <p>{{ blog.description }}</p>
+            <p>Author: {{ blog.author }}</p>
+            <p>Date Posted: {{ blog.date_posted }}</p>
+            <p>Reads: {{ blog.reads }} | Likes: {{ blog.likes }} | Comments: {{ blog.comments_count }}</p>
+            <img src="{{ blog.image.url }}" alt="{{ blog.title }}">
+        </li>
+    {% endfor %}
+</ul>
+
+<h1>News</h1>
+<ul>
+    {% get_news as news_items %}
+    {% for news_item in news_items %}
+        <li>
+            <h2>{{ news_item.title }}</h2>
+            <p>{{ news_item.content }}</p>
+            <p>Date Posted: {{ news_item.date_posted }}</p>
+            <img src="{{ news_item.image.url }}" alt="{{ news_item.title }}">
+        </li>
+    {% endfor %}
+</ul>
+
+<h1>Projects</h1>
+<ul>
+    {% get_projects as projects %}
+    {% for project in projects %}
+        <li>
+            <h2>{{ project.title }}</h2>
+            <p>{{ project.description }}</p>
+            <p>Status: {{ project.status }}</p>
+            <img src="{{ project.image.url }}" alt="{{ project.title }}">
+        </li>
+    {% endfor %}
+</ul>
+
+type
+
+{% get_types as type %}
+{% for i in type %}
+<li class="mb-2"><a class="reset-anchor" href="{% url 'web:shop' %}?type={{ i.id }}">{{i.name}}</a></li>
+{% endfor %}
+
+{% for item in item %}
+<a href="{% url 'webpage:item_detail' item_id=item.id %}">view item</a>
+
+            <!-- Single Product Area -->
+            <div class="col-12 col-sm-6 col-md-12 col-xl-6 ">
+                <div class="single-product-wrapper">
+                    <!-- Product Image -->
+                    <div class="product-img">
+
+                        {% with first_image=item.images.all.0 %}
+
+                        <a href="{% url 'shop:item_detail' item_id=item.id %}"><img src="{{first_image.image.url}}" alt="{{item.name}}"></a>
+                        {% endwith %}
+                        {% with secondimage=item.images.all.1 %}
+
+                        <a href="{% url 'shop:item_detail' item_id=item.id %}"><img class="hover-img" src="{{secondimage.image.url}}" alt="{{item.name}}"></a>
+                        {% endwith %}
+                    </div>
+
+                    <!-- Product Description -->
+                    <div class="product-description d-flex align-items-center justify-content-between">
+                        <!-- Product Meta Data -->
+                        <div class="product-meta-data">
+                            <div class="line"></div>
+                            <p class="product-price">
+                                {% if item.disc > 0 %}
+                                    {% with discounted_price=item.price|calculate_discounted_price:item.disc|floatformat:2 %}
+                                                <del>{{ item.price }} birr</del> <ins>${{ discounted_price }} birr</ins>
+                                    {% endwith %}
+                                {% else %}
+                                  <ins>{{ item.price }} birr</ins>
+                                {% endif %}                                       
+                            </p>
+                            <a href="{% url 'shop:item_detail' item_id=item.id %}">
+                                <h6>{{item.name}}</h6>
+                            </a>
+                        </div>
+                        <!-- Ratings & Cart -->
+                        <div class="ratings-cart text-right">
+                            <div class="ratings">
+                                {% with stars=item.average_rating|calculate_stars %}
+                                    {% for _ in "x"|ljust:stars.full_stars %}
+                                        <i class="fa fa-star" aria-hidden="true"></i>
+                                    {% endfor %}
+                                    {% if stars.half_star %}
+                                        <i class="bi-star-half"></i>
+                                    {% endif %}
+                                    {% for _ in "x"|ljust:stars.remaining_stars %}
+                                        <i class="bi-star"></i>
+                                    {% endfor %}
+                                {% endwith %}
+                            </div>
+                            <div class="cart">
+                                <a href="{% url 'shop:item_detail' item_id=item.id %}" data-toggle="tooltip" data-placement="left" title="Add to Cart"><img src="img/core-img/cart.png" alt=""></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        {% endfor %}
+
+<h1>Items</h1>
+<ul>
+    {% get_items 1 10 as items %}
+    {% for item in items %}
+        <li>
+            <h2>{{ item.name }}</h2>
+            <p>Type: {{ item.type.name }}</p>
+            <p>Price: {{ item.price }}</p>
+            {% if item.disc > 0 %}
+            {% with discounted_price=item.price|calculate_discounted_price:item.disc|floatformat:2 %}
+                                    
+            <del>{{ item.price }} birr</del> <span class="price">{{ discounted_price }} birr</span></p>
+            {% endwith %}
+             {% endif %}
+            <p>Active: {{ item.active }}</p>
+            <ul>
+                {% for description in item.descriptions.all %}
+                    <li>{{ description.text }}</li>
+                {% endfor %}
+            </ul>
+            <ul>
+                {% for image in item.images.all %}
+                    <li><img src="{{ image.file.url }}" alt="Item Image"></li>
+                {% endfor %}
+            </ul>
+            <ul>
+                <li><img src="{{ item|first_image.file.url }}" alt="Item Image"></li>
+            </ul>
+            <ul>
+                {% for rating in item.ratings.all %}
+                    <li>Rating: {{ rating.score }} - {{ rating.comment }}</li>
+                {% endfor %}
+            </ul>
+        </li>
+    {% endfor %}
+</ul>
+
+<nav>
+    <ul>
+        {% for page_num in items.paginator.page_range %}
+            <li>
+                <a href="?page={{ page_num }}">{{ page_num }}</a>
+            </li>
+        {% endfor %}
+    </ul>
+</nav>
+
+<h1>Subscription Plans</h1>
+<ul>
+    {% get_subscription_plans as subscription_plans %}
+    {% for plan in subscription_plans %}
+        <li>
+            <h2>{{ plan.name }}</h2>
+            <p>Price: ${{ plan.price }}</p>
+            <p>{{ plan.description }}</p>
+            <p>Created At: {{ plan.created_at }}</p>
+            <h3>Offers</h3>
+            <ul>
+                {% for offer in plan.offers.all %}
+                    <li>{{ offer.name }}: {{ offer.description }}</li>
+                {% endfor %}
+            </ul>
+        </li>
+    {% endfor %}
+</ul>
+
+
+<form method="post" action="{% url 'web:collect_email' %}">
+    {% csrf_token %}
+    <input type="email" name="email" placeholder="Enter your mail">
+    <button type="submit" class="btn_1">Subscribe</a>
+</form>
+
+
+social 
+
+{% get_socialmedia as social %}
+
+{% for socilamedia in social %}
+{% if socilamedia.social_media.name == "Facebook" %}
+<a href="{{socilamedia.link}}"><i class="fab fa-facebook"></i></a>
+{% elif socilamedia.social_media.name == "Instagram" %}
+<a href="{{socilamedia.link}}"> <i class="fab fa-instagram"></i></a>
+{% elif socilamedia.social_media.name == "Twitter" %}
+<a href="{{socilamedia.link}}"> <i class="fab fa-twitter"></i></a>
+{% elif socilamedia.social_media.name == "LinkedIn" %}
+<a href="{{socilamedia.link}}"> <i class="fab fa-linkedin"></i></a>
+{% elif socilamedia.social_media.name == "Snapchat" %}
+<a href="{{socilamedia.link}}"> <i class="fab fa-snapchat"></i></a>
+{% elif socilamedia.social_media.name == "Pinterest" %}
+<a href="{{socilamedia.link}}"> <i class="fab fa-pinterest"></i></a>
+{% elif socilamedia.social_media.name == "Reddit" %}
+<a href="{{socilamedia.link}}"> <i class="fab fa-reddit"></i></a>
+{% elif socilamedia.social_media.name == "TikTok" %}
+<a href="{{socilamedia.link}}"> <i class="fab fa-tiktok"></i></a>
+{% elif socilamedia.social_media.name == "YouTube" %}
+<a href="{{socilamedia.link}}"> <i class="fab fa-youtube"></i></a>
+{% elif socilamedia.social_media.name == "WhatsApp" %}
+<a href="{{socilamedia.link}}"> <i class="fab fa-whatsapp"></i></a>
+{% elif socilamedia.social_media.name == "WeChat" %}
+<a href="{{socilamedia.link}}"> <i class="fab fa-weixin"></i></a>
+{% elif socilamedia.social_media.name == "Tumblr" %}
+<a href="{{socilamedia.link}}"> <i class="fab fa-tumblr"></i></a>
+{% elif socilamedia.social_media.name == "Twitch" %}
+<a href="{{socilamedia.link}}"><i class="fab fa-twitch"></i></a>
+{% elif socilamedia.social_media.name == "Telegram" %}
+<a href="{{socilamedia.link}}"> <i class="fab fa-telegram"></i></a>
+{% elif socilamedia.social_media.name == "Discord" %}
+<a href="{{socilamedia.link}}"> <i class="fab fa-discord"></i></a>
+{% elif socilamedia.social_media.name == "Clubhouse" %}
+<a href="{{socilamedia.link}}"> <i class="fab fa-houzz"></i></a>
+{% elif socilamedia.social_media.name == "Viber" %}
+<a href="{{socilamedia.link}}"> <i class="fab fa-viber"></i></a>
+{% elif socilamedia.social_media.name == "LINE" %}
+<a href="{{socilamedia.link}}"> <i class="fab fa-line"></i></a>
+{% elif socilamedia.social_media.name == "QQ" %}
+<a href="{{socilamedia.link}}"> <i class="fab fa-qq"></i></a>
+{% elif socilamedia.social_media.name == "Sina Weibo" %}
+<a href="{{socilamedia.link}}"> <i class="fab fa-weibo"></i></a>
+{% endif %}
+{% endfor %}
+
+
+message
+<form action="{% url 'web:create_message' %}" method="post" >
+{% csrf_token %}
+<input type="text"  name="name" value="" placeholder="Full Name">
+<input type="text" name="email" value="" placeholder="Email Address">
+<input type="text" name="about" value="" placeholder="Email Address">
+<textarea name="description" rows="4" cols="30" placeholder="Message"></textarea>
+
+<button type="submit" value="submit">Send Email</button>
+
+</form>
+
+
+
+<li class="nav-item">
+<!-- Link--><a class="nav-link active" href="{% url 'web:index' %}">Home</a>
+</li>
+<li class="nav-item">
+<!-- Link--><a class="nav-link" href="{% url 'web:shop' %}">Shop</a>
+</li>
+<li class="nav-item">
+<!-- Link--><a class="nav-link" href="{% url 'shop:purchesed_list' %}">Product Order list</a>
+</li>
+</ul>
+<ul class="navbar-nav ms-auto">
+<li class="nav-item"><a class="nav-link" href="{% url 'shop:cart_list' %}"> <i class="fas fa-dolly-flatbed me-1 text-gray"></i>Cart<small class="text-gray fw-normal"></small></a></li>
+{% if user.is_authenticated %}
+<li class="nav-item"><a class="nav-link" href="{% url 'shop:logout' %}"> <i class="fas fa-user me-1 text-gray fw-normal"></i>Logout</a></li>
+
+{% else %}
+<li class="nav-item"><a class="nav-link" href="{% url 'shop:login' %}"> <i class="fas fa-user me-1 text-gray fw-normal"></i>Login/register</a></li>
+{% endif %}
+
+
+{% if user.is_authenticated %}
+<li><div class="gradient-button"><a href="{% url 'web:logout' %}"><i class="fa fa-sign-out-alt"></i>Logout</a></div></li> 
+{% else %}
+<li><div class="gradient-button"><a href="{% url 'shop:login' %}"><i class="fa fa-sign-in-alt"></i> Sign In Now</a></div></li> 
+{% endif %}
+
+    Cart vieew
+{% if user.is_authenticated %}
+    <p>Welcome, {{ user.username }}!</p>
+
+    <h1>Your Orders</h1>
+    {% get_orders_and_total user.id as orders_and_total %}
+    {% with orders_and_total.0 as orders %}
+    {% with orders_and_total.1 as total_price %}
+    
+    <p>Total Order Price: ${{ total_price }}</p>
+
+    <ul>
+        {% for order in orders %}
+            <li>
+                <p>Order ID: {{ order.id }}</p>
+                <p>Item: {{ order.item.name }}</p>
+                <p>Quantity: {{ order.quntity }}</p>
+                <p>Price per Item: ${{ order.item.price }}</p>
+                <p>Total Price: ${{ order.quntity|floatformat:2 }} * ${{ order.item.price|floatformat:2 }} = ${{ order.quntity|floatformat:2|add:order.item.price }}</p>
+            </li>
+        {% endfor %}
+    </ul>
+    
+    {% endwith %}
+    {% endwith %}
+{% endif %}
+
+
+#blog ditel
+
+<h1>{{ blog.title }}</h1>
+<p>{{ blog.description }}</p>
+<p>Author: {{ blog.author }}</p>
+<p>Date Posted: {{ blog.date_posted }}</p>
+<!-- Render blog contents -->
+{% for content in content1 %}
+    {% if content.content_type.model == 'content' %}
+        <p>{{ content.content_object.text }}</p>
+    {% elif content.content_type.model == 'image' %}
+        <p>{{ content.content_object.info }}</p>
+        <img src="{{ content.content_object.image.url }}" alt="Content Image">
+    {% elif content.content_type.model == 'quote' %}
+        <blockquote>
+            <p>{{ content.content_object.quote }}</p>
+            <footer>— {{ content.content_object.author }}</footer>
+        </blockquote>
+    {% elif content.content_type.model == 'codeblock' %}
+        <pre><code>{{ content.content_object.code }}</code></pre>
+    {% elif content.content_type.model == 'video' %}
+        <iframe src="{{ content.content_object.url }}" frameborder="0" allowfullscreen></iframe>
+    {% elif content.content_type.model == 'ad' %}
+        <div>{{ content.content_object.ad_code }}</div>
+    {% elif content.content_type.model == 'list' %}
+        <ul>
+            {% for item in content.content_object.items.splitlines %}
+                <li>{{ item }}</li>
+            {% endfor %}
+        </ul>
+    {% elif content.content_type.model == 'title' %}
+        <h2>{{ content.content_object.title }}</h2>
+    {% elif content.content_type.model == 'subtitle' %}
+        <h3>{{ content.content_object.subtitle }}</h3>
+    {% endif %}
+{% endfor %}
+
+
+#prodact ditel 
+{% for im in item.images.all %}
+    <a class="mb-3 d-block" href="{{im.image.url}}" title="Pink Printed Dress - Front View" data-lightbox="gallery-item"><img src="{{im.image.url}}"></a>
+{% endfor %}
+
+<!-- Product Single - Price
+============================================= -->
+{% if item.disc > 0 %}
+        {% with discounted_price=item.price|calculate_discounted_price:item.disc|floatformat:2 %}
+            <div class="product-price"><del>${{ item.price }} birr</del> <ins>${{ discounted_price }} birr</ins></div>
+        {% endwith %}
+    {% else %}
+        <div class="product-price"><ins>{{ item.price }} birr</ins></div>
+    {% endif %}
+        <!-- Product Single - Rating
+        ============================================= -->
+        <div class="product-rating">
+            {{ item.average_rating }}
+            {% with stars=item.average_rating|calculate_stars %}
+                {% for _ in "x"|ljust:stars.full_stars %}
+                    <i class="bi-star-fill"></i>
+                {% endfor %}
+                {% if stars.half_star %}
+                    <i class="bi-star-half"></i>
+                {% endif %}
+                {% for _ in "x"|ljust:stars.remaining_stars %}
+                    <i class="bi-star"></i>
+                {% endfor %}
+            {% endwith %}
+
+            #commentlist
+                {% for com in comen %}
+
+                <li class="comment even thread-even depth-1" id="li-comment-1">
+                    <div id="comment-1" class="comment-wrap">
+
+                        <div class="comment-meta">
+                            <div class="comment-author vcard">
+                                <span class="comment-avatar">
+                                    <img alt='Image'
+                                        src='https://0.gravatar.com/avatar/ad516503a11cd5ca435acc9bb6523536?s=60'
+                                        height='60' width='60'></span>
+                            </div>
+                        </div>
+
+                        <div class="comment-content">
+                            <div class="comment-author">{{com.Client.user.first_name}}<span><a href="#"
+                                        title="Permalink to this comment">{{com.created_at}}</a></span></div>
+                            <p>{{com.text}}</p>
+                            <div class="review-comment-ratings">
+                                    {% with stars=com.rating|calculate_stars %}
+                                        {% for _ in "x"|ljust:stars.full_stars %}
+                                            <i class="bi-star-fill"></i>
+                                        {% endfor %}
+                                        {% if stars.half_star %}
+                                            <i class="bi-star-half"></i>
+                                        {% endif %}
+                                        {% for _ in "x"|ljust:stars.remaining_stars %}
+                                            <i class="bi-star"></i>
+                                        {% endfor %}
+                                    {% endwith %}
+                            </div>
+                        </div>
+
+                        <div class="clear"></div>
+
+                    </div>
+                </li>
+
+                {% endfor %}
+
+    <!-- Product Single - Quantity & Cart Button
+        ============================================= -->
+        <form class="cart mb-0 d-flex justify-content-between align-items-center" method="post" enctype='multipart/form-data'>
+            <div class="quantity">
+                {% csrf_token %} 
+                <input type="button" value="-" class="minus">
+                <input type="number" step="1" min="1" name="quantity" value="1" title="Qty" class="qty">
+                <input type="button" value="+" class="plus">
+            </div>
+            <button type="submit" class="add-to-cart button m-0">Add to cart</button>
+        </form><!-- Product Single - Quantity & Cart Button End -->
+
+
+
+
+        #Cart list View
+
+        {% for i in order %}
+                                <tr class="cart_item">
+                                        <td class="cart-product-remove">
+                                            <a href="{% url 'shop:remove' id=i.0.id %}" class="remove" title="Remove this item"><i class="fa-solid fa-trash"></i></a>
+                                        </td>
+
+                                        <td class="cart-product-thumbnail">
+                                            <a href="#"><img width="64" height="64" src="{{i.0.item.images.all.0.image.url}}" alt="Pink Printed Dress"></a>
+                                        </td>
+
+                                        <td class="cart-product-name">
+                                            <a href="#">{{i.0.item.name}}</a>
+                                        </td>
+
+                                        <td class="cart-product-price">
+                                            {% if i.0.item.disc > 0 %}
+                                                {% with discounted_price=i.0.item.price|calculate_discounted_price:i.0.item.disc|floatformat:2 %}
+                                                            <div class="amount"><del>{{i.0.item.price}} </del> <ins>{{ discounted_price }} birr</ins></div>
+                                                {% endwith %}
+                                            {% else %}
+                                                <span class="amount">{{i.0.item.price}} birr</span>
+                                            {% endif %}
+                                            
+                                        </td>
+
+                                        <td class="cart-product-quantity">
+                                            <div class="quantity">
+                                                <form method="post">
+                                                    {% csrf_token %} 
+                                                    <div class="quantity">
+
+                                                <input type="button" value="-" class="minus">
+                                                <input type="text" name="id" value="{{i.0.id}}" hidden>
+                                                <input type="text" name="qunt" value="{{i.0.quntity}}" class="qty">
+                                                <input type="button" value="+" class="plus">
+                                                    </div>
+                                                <button type="submit" class="add-to-cart button m-0">change</button>
+
+                                            </form>
+                                            </div>
+                                        </td>
+
+                                        <td class="cart-product-subtotal">
+                                            {% if i.0.item.disc > 0 %}
+
+                                            {% with discounted_price=i.1|calculate_discounted_price:i.0.item.disc|floatformat:2 %}
+                                                            <div class="amount"><del>{{i.1}} </del> <ins>{{ discounted_price }} birr</ins></div>
+                                                {% endwith %}
+                                            {% else %}
+                                                <span class="amount">{{i.1}} birr</span>
+                                            {% endif %}
+
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+
+
+
+#billing address recoed 
+<!-- add_delivery_address.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Add Delivery Address</title>
+</head>
+<body>
+<h1>Add Delivery Address</h1>
+<form method="post" action="">
+    {% csrf_token %}
+    <label for="full_name">Full Name:</label>
+    <input type="text" id="full_name" name="full_name" required><br><br>
+
+    <label for="phone_number">Phone Number:</label>
+    <input type="text" id="phone_number" name="phone_number" required><br><br>
+
+    <label for="address_line1">Address Line 1:</label>
+    <input type="text" id="address_line1" name="address_line1" required><br><br>
+
+    <label for="address_line2">Address Line 2:</label>
+    <input type="text" id="address_line2" name="address_line2"><br><br>
+
+    <label for="city">City:</label>
+    <input type="text" id="city" name="city" required><br><br>
+
+    <label for="state">State:</label>
+    <input type="text" id="state" name="state" required><br><br>
+
+    <label for="postal_code">Postal Code:</label>
+    <input type="text" id="postal_code" name="postal_code" required><br><br>
+
+    <label for="country">Country:</label>
+    <input type="text" id="country" name="country" required><br><br>
+
+    <label for="additional_instructions">Additional Instructions:</label>
+    <textarea id="additional_instructions" name="additional_instructions"></textarea><br><br>
+
+    <label for="default">Set as Default:</label>
+    <input type="checkbox" id="default" name="default"><br><br>
+
+    <button type="submit">Save Address</button>
+</form>
+
+
+<div class="col-lg-6">
+    <h4>Cart Totals</h4>
+
+    <div class="table-responsive">
+        <table class="table cart">
+            <tbody>
+                <tr class="cart_item">
+                    <td class="border-top-0 cart-product-name">
+                        <strong>Cart Subtotal</strong>
+                    </td>
+
+                    <td class="border-top-0 cart-product-name">
+                        <span class="amount">{{total}} birr</span>
+                    </td>
+                </tr>
+                <tr class="cart_item">
+                    <td class="border-top-0 cart-product-name">
+                        <strong>Discount</strong>
+                    </td>
+
+                    <td class="border-top-0 cart-product-name">
+                        <span class="amount">- {{discunt}} birr</span>
+                    </td>
+                </tr>
+                <tr class="cart_item">
+                    <td class="cart-product-name">
+                        <strong>Shipping</strong>
+                    </td>
+
+                    <td class="cart-product-name">
+                        <span class="amount">Free Delivery</span>
+                    </td>
+                </tr>
+                <tr class="cart_item">
+                    <td class="cart-product-name">
+                        <strong>Total</strong>
+                    </td>
+
+                    <td class="cart-product-name">
+                        <span class="amount color lead"><strong>{{subtot}} birr</strong></span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="accordion">
+        <div class="accordion-header">
+            <div class="accordion-icon">
+                <i class="accordion-closed uil uil-minus"></i>
+                <i class="accordion-open bi-check-lg"></i>
+            </div>
+            <div class="accordion-title">
+                Direct Bank Transfer
+            </div>
+        </div>
+        <div class="accordion-content">
+            <p>Donec sed odio dui. Nulla vitae elit libero, a pharetra augue. Nullam id dolor id nibh ultricies vehicula ut id elit. Integer posuere erat a ante venenatis dapibus posuere velit aliquet.</p>
+            <div class="table-responsive">
+                <table class="table cart">
+                    <thead>
+                        <tr>
+                            <th class="cart-product-name">Account Name(Bank)</th>
+                            <th class="cart-product-subtotal">Account Number</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for ban in  bank %}
+                        <tr class="cart_item">
+
+                            <td class="cart-product-name">
+                                <a href="#">{{ban.name}} ({{ban.Bank_name}})</a>
+                            </td>
+
+
+                            <td class="cart-product-subtotal">
+                                <span class="amount">{{ban.account_number}}</span>
+                            </td>
+                        </tr>
+                        {% endfor %}
+
+                        
+                        
+                    </tbody>
+
+                </table>
+                </div>
+        </div>
+    </div>
+    <div class="d-flex justify-content-end">
+        <a href="#" class="button button-3d">Place Order</a>
+    </div>
+</div>
+
+
+#place an order
+<table class="table cart mb-12">
+    <thead>
+        <tr>
+            <th class="cart-product-thumbnail">Order Number</th>
+            <th class="cart-product-quantity">State</th>
+            <th class="cart-product-subtotal">Total Item cost</th>
+            <th class="cart-product-subtotal">Total Discount</th>
+            <th class="cart-product-subtotal">Total to be paid</th>
+            <th class="cart-product-subtotal">Paid amount</th>
+            <th class="cart-product-subtotal">View</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for i in listorder %}
+        
+        <tr class="cart_item">
+
+                <td class="cart-product-thumbnail">
+                    <span class="amount">{{i.payed.id}} </span>
+
+                </td>
+                <td class="cart-product-quantity">
+                    {{i.order.status}}
+                </td>
+
+
+                <td class="cart-product-quantity">
+                    <span class="amount">{{i.total}} birr</span>
+                </td>
+
+
+                <td class="cart-product-quantity">
+                    <span class="amount">{{i.discunt}} birr</span>
+                </td>
+                <td class="cart-product-quantity">
+                    <span class="amount">{{i.subtot}} birr</span>
+                </td>
+                <td class="cart-product-quantity">
+                    <span class="amount">{{i.totalpaid}} birr</span>
+                </td>
+                <td class="cart-product-quantity">
+                    <div class="d-flex justify-content-end">
+                        <a href="{% url 'shop:payment_display' i.id %}" class="button button-3d">View Order</a>
+                    </div>
+                </td>
+            </tr>
+        {% endfor %}
+        
+    </tbody>
+
+</table>
+
+
+#service ordering
+
+
+{% get_servic_services as prodacts %}
+    {% for prodact in prodacts %}
+
+    <div class="col-lg-4 col-md-6">
+    <div class="box">
+        <h3>{{prodact.title}}</h3>
+        <h4><sup>$</sup>{{prodact.price}}<span> /span></h4>
+        <ul>
+        <p>
+            {{prodact.description}}
+        </p>
+        </ul>
+        <div class="btn-wrap">
+        <a  class="btn-buy" onclick="openForm({{prodact.id}})">Buy Now</a>
+        </div>
+    </div>
+    </div>
+{% endfor %}
+
+
+      <div id="formDialog" class="form-container">
+        <div class="form-content">
+            <span class="close" onclick="closeForm()">&times;</span>
+            <h1>Enter Your Details</h1>
+            <form action="{% url 'register_order' %}" method="post">
+                {% csrf_token %}
+                <input type="hidden" id="service_id" name="service">
+                <div class="form-group">
+                    <label for="name">Name:</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="phone">Phone:</label>
+                    <input type="tel" id="phone" name="phone_number" required>
+                </div>
+                <div class="form-group">
+                    <label for="quantity">Quantity (kg):</label>
+                    <input type="number" id="quantity" name="quantity" required>
+                </div>
+                <div class="form-group">
+                    <button type="submit">Submit</button>
+                </div>
+            </form>
+            {% if success_message %}
+                <div class="success-message">{{ success_message }}</div>
+            {% endif %}
+        </div>
+    </div>
+
+
+
